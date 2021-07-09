@@ -20,7 +20,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.8]
-        os: [ARM64]
+        os: [buster]
 
     steps:
     - name: Cancel previous runs on the same branch
