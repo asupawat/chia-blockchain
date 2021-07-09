@@ -36,7 +36,8 @@ jobs:
         fetch-depth: 0
         submodules: recursive
 
-    - name: Build ARM64 Installer
+    - name: Run commands
+      id: runcmd
       run: |
         uname -a
         echo ::set-output name=uname::$(uname -a)
