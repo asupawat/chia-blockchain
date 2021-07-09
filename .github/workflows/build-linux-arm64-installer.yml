@@ -1,14 +1,6 @@
 name: Linux ARM64 installer on Python 3.8
 
-on:
-  push:
-    branches:
-      - pools-release
-    tags:
-        - '**'
-  pull_request:
-    branches:
-      - '**'
+on: [push, pull_request]
 
 jobs:
   build:
