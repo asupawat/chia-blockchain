@@ -1,28 +1,45 @@
-name: Basic Example
-on: [push, pull_request]
+name: Linux ARM64 installer on Python 3.8
+
+on:
+  push:
+    branches:
+      - pools-release
+    tags:
+        - '**'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
-  armv7_job:
-    # The host should always be linux
-    runs-on: ubuntu-18.04
-    name: Build on ubuntu-18.04 armv7
+  build:
+    name: Linux ARM64 installer on Python 3.8
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        python-version: [3.8]
+        os: [ARM64]
+
     steps:
-      - name: Checkout Code
+    - name: Cancel previous runs on the same branch
+      if: ${{ github.ref != 'refs/heads/main' }}
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        access_token: ${{ github.token }}
+
+    - name: Checkout Code
       uses: actions/checkout@v2
-      
-      - uses: ./ # If copying this example, change this to uraimo/run-on-arch-action@vX.Y.Z
-        name: Run commands
-        id: runcmd
-        with:
-          arch: aarch64
-          distro: archarm_latest
+      with:
+        fetch-depth: 0
+        submodules: recursive
 
-          # Not required, but speeds up builds
-          githubToken: ${{ github.token }}
-
-          run: |
-            uname -a
-            echo ::set-output name=uname::$(uname -a)
-      - name: Get the output
-        run: |
-          echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
+    - name: Build ARM64 Installer
+      run: |
+        uname -a
+        echo ::set-output name=uname::$(uname -a)
+            
+    - name: Get the output
+      run: |
+        echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
